@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Runtime.Serialization;
 
+//https://stackoverflow.com/questions/7710220/wcf-performance-latency-and-scalability
 namespace StockApp
 {
     [DataContract]
