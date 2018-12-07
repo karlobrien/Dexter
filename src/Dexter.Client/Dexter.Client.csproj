@@ -10,4 +10,8 @@
     <PackageReference Include="System.Reactive" Version="4.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Dexter.Dto\Dexter.Dto.csproj" />
+    <ProjectReference Include="..\Dexter.Common\Dexter.Common.csproj" />
+  </ItemGroup>
 </Project>

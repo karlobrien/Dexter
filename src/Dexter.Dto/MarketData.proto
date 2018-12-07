@@ -1,0 +1,16 @@
+syntax = "proto3";
+package Dexter.Dto;
+
+message MarketData {
+    string Instrument = 1;
+    double BidPrice = 2;
+    int64 BidSize = 3;
+    double AskPrice = 4;
+    int64 AskSize = 5;
+    double LastPrice = 6;
+    int64 LastSize = 7;
+}
+
+message MarketDataRequest {
+    string Insturment = 1;
+}

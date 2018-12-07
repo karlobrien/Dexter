@@ -21,12 +21,14 @@ namespace Dexter.Server
         {
             _liveDataDis = _liveData.Subscribe(sub => {
                 //put this on the socket send
+                Console.WriteLine($"Sending {sub}");
                 _publisherSocket.SendMoreFrame("topic").SendFrame($"{sub}");
             });
         }
 
         public void Dispose()
         {
+            _liveDataDis.Dispose();
             _publisherSocket.Dispose();
         }
     }

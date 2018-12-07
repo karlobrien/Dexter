@@ -14,15 +14,16 @@ namespace Dexter.Client
             ReceiveQueue = new ConcurrentQueue<string>();
             _subscriberSocket = new SubscriberSocket();
             _subscriberSocket.Options.ReceiveHighWatermark = 1000;
-            _subscriberSocket.Connect("tcp://localhost:12345");
+            _subscriberSocket.Connect("tcp://localhost:4090");
             _subscriberSocket.Subscribe("topic");
 
             Console.WriteLine("Subscriber socket connecting...");
+
             while (true)
             {
                 string messageTopicReceived = _subscriberSocket.ReceiveFrameString();
                 string messageReceived = _subscriberSocket.ReceiveFrameString();
-                Console.WriteLine(messageReceived);
+                Console.WriteLine($"PubSub: topic: {messageTopicReceived}, msg: {messageReceived}");
             }
         }
     }

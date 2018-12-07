@@ -1,5 +1,8 @@
 using System;
+using System.IO;
+using Dexter.Dto;
 using NetMQ;
+using Google.Protobuf;
 using NetMQ.Sockets;
 
 namespace Dexter.Client
@@ -13,11 +16,24 @@ namespace Dexter.Client
             _requestSocket.Connect("tcp://localhost:5555");
         }
 
-        public string SendReceiveRequst(string request)
+        public MarketData SendReceiveRequest(MarketData request)
         {
-            _requestSocket.SendFrame(request);
-            var message = _requestSocket.ReceiveFrameString();
-            return message;
+            byte[] bytes;
+            using(MemoryStream stream = new MemoryStream())
+            {
+                request.WriteTo(stream);
+                bytes = stream.ToArray();
+            }
+            var sendSuccess = _requestSocket.TrySendFrame(bytes);
+
+            if (sendSuccess)
+            {
+                //blocking
+                var result = _requestSocket.ReceiveFrameBytes();
+                return MarketData.Parser.ParseFrom(result);
+            }
+
+            return new MarketData {Instrument = "EMPTY"};
         }
 
         public void Dispose()

@@ -1,11 +1,12 @@
 using System;
+using System.IO;
+using Dexter.Dto;
+using Google.Protobuf;
 using NetMQ;
 using NetMQ.Sockets;
 
 namespace Dexter.Server
 {
-    public partial class Program
-    {
         public class DataResponse : IDisposable
         {
             private ResponseSocket _responseSocket;
@@ -17,10 +18,23 @@ namespace Dexter.Server
 
                 while(true)
                 {
-                    var message = _responseSocket.ReceiveFrameString();
-                    Console.WriteLine("Received {0}", message);
-                    Console.WriteLine("Sending World");
-                    _responseSocket.SendFrame("World");
+                    var mdMsg = _responseSocket.TryReceiveFrameBytes(out var items);
+                    if (mdMsg)
+                    {
+                        MarketData mdRecd = MarketData.Parser.ParseFrom(items);
+
+                        Console.WriteLine("Received {0}", mdRecd.Instrument);
+                        mdRecd.Instrument = "CORP LN";
+
+                        byte[] bytes;
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            mdRecd.WriteTo(stream);
+                            bytes = stream.ToArray();
+                        }
+
+                       var sendSuccess = _responseSocket.TrySendFrame(bytes);
+                    }
                 }
             }
 
@@ -30,6 +44,3 @@ namespace Dexter.Server
             }
         }
     }
-
-
-}
