@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using Dexter.Dto;
 using NetMQ;
 using NetMQ.Sockets;
 
@@ -7,11 +8,11 @@ namespace Dexter.Client
 {
     public class MulticastSubscriber
     {
-        public ConcurrentQueue<string> ReceiveQueue { get; }
+        public ConcurrentQueue<MarketData> ReceiveQueue { get; }
         private SubscriberSocket _subscriberSocket;
         public MulticastSubscriber()
         {
-            ReceiveQueue = new ConcurrentQueue<string>();
+            ReceiveQueue = new ConcurrentQueue<MarketData>();
             _subscriberSocket = new SubscriberSocket();
             _subscriberSocket.Options.ReceiveHighWatermark = 1000;
             _subscriberSocket.Connect("tcp://localhost:4090");
@@ -21,9 +22,13 @@ namespace Dexter.Client
 
             while (true)
             {
-                string messageTopicReceived = _subscriberSocket.ReceiveFrameString();
-                string messageReceived = _subscriberSocket.ReceiveFrameString();
-                Console.WriteLine($"PubSub: topic: {messageTopicReceived}, msg: {messageReceived}");
+                var mdTopicReceived = _subscriberSocket.TryReceiveFrameString(out var messageTopicReceived);
+                if (mdTopicReceived)
+                {
+                    var mdMsgRecd = _subscriberSocket.TryReceiveFrameBytes(out var msg);
+                    var messageReceived = MarketData.Parser.ParseFrom(msg);
+                    Console.WriteLine($"PubSub: topic: {messageTopicReceived}, msg: {messageReceived}");
+                }
             }
         }
     }

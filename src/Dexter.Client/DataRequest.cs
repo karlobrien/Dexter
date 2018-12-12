@@ -7,6 +7,9 @@ using NetMQ.Sockets;
 
 namespace Dexter.Client
 {
+    /// <summary>
+    /// Request Response
+    /// </summary>
     public class DataRequest : IDisposable
     {
         private RequestSocket _requestSocket;
@@ -40,5 +43,13 @@ namespace Dexter.Client
         {
             _requestSocket.Dispose();
         }
+    }
+
+    /// <summary>
+    /// Implemention of the Router Dealer pattern from zero mq
+    /// </summary>
+    public class RouterDealer
+    {
+
     }
 }

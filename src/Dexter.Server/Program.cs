@@ -14,11 +14,9 @@ namespace Dexter.Server
             Console.WriteLine("Starting Request/ Response Thread");
             Task t = Task.Run(() => new DataResponse());
 
-            /*
             var interval = Observable.Interval(TimeSpan.FromSeconds(1));
             MulticastPublisher mp = new MulticastPublisher(interval);
             mp.Start();
-            */
 
             Console.ReadLine();
         }

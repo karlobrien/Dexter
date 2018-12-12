@@ -19,7 +19,7 @@ namespace Dexter.Client
             var response = dr.SendReceiveRequest(md);
             Console.WriteLine($"Request/ Response: {response.Instrument}");
 
-            //MulticastSubscriber ms = new MulticastSubscriber();
+            MulticastSubscriber ms = new MulticastSubscriber();
 
             bool stopRequested = false;
             Console.CancelKeyPress += (sender, e) => stopRequested = true;

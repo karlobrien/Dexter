@@ -1,4 +1,7 @@
 using System;
+using System.IO;
+using Dexter.Dto;
+using Google.Protobuf;
 using NetMQ;
 using NetMQ.Sockets;
 
@@ -20,9 +23,21 @@ namespace Dexter.Server
         public void Start()
         {
             _liveDataDis = _liveData.Subscribe(sub => {
+
+                MarketData msg = new MarketData();
+                msg.Instrument = "VOD LN";
+                msg.AskPrice = 2;
+                msg.BidPrice = 4;
+
+                byte[] bytes;
+                using(MemoryStream stream = new MemoryStream())
+                {
+                    msg.WriteTo(stream);
+                    bytes = stream.ToArray();
+                }
                 //put this on the socket send
-                Console.WriteLine($"Sending {sub}");
-                _publisherSocket.SendMoreFrame("topic").SendFrame($"{sub}");
+                Console.WriteLine($"Sending {msg.Instrument}");
+                _publisherSocket.SendMoreFrame("topic").SendFrame(bytes);
             });
         }
 
