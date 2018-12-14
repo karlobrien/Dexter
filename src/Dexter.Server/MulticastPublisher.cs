@@ -4,6 +4,7 @@ using Dexter.Dto;
 using Google.Protobuf;
 using NetMQ;
 using NetMQ.Sockets;
+using Dexter.Common;
 
 namespace Dexter.Server
 {
