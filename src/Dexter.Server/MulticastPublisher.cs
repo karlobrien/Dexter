@@ -36,9 +36,12 @@ namespace Dexter.Server
                     msg.WriteTo(stream);
                     bytes = stream.ToArray();
                 }
+
+                NetMQMessage mqMsg = NetMqMessageExtensions.CreateMessage("topic", bytes);
                 //put this on the socket send
                 Console.WriteLine($"Sending {msg.Instrument}");
-                _publisherSocket.SendMoreFrame("topic").SendFrame(bytes);
+                _publisherSocket.SendMultipartMessage(mqMsg);
+                //_publisherSocket.SendMoreFrame("topic").SendFrame(bytes);
             });
         }
 

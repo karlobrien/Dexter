@@ -22,13 +22,22 @@ namespace Dexter.Client
 
             while (true)
             {
-                var mdTopicReceived = _subscriberSocket.TryReceiveFrameString(out var messageTopicReceived);
+                NetMQMessage message = null;
+                var msg = _subscriberSocket.TryReceiveMultipartMessage(ref message, 2);
+                if (msg)
+                {
+                    Console.WriteLine(message.First.ConvertToString());
+                    var unwrap = MarketData.Parser.ParseFrom(message.Last.Buffer);
+                    Console.WriteLine(unwrap.Instrument);
+                }
+
+                /* var mdTopicReceived = _subscriberSocket.TryReceiveFrameString(out var messageTopicReceived);
                 if (mdTopicReceived)
                 {
                     var mdMsgRecd = _subscriberSocket.TryReceiveFrameBytes(out var msg);
                     var messageReceived = MarketData.Parser.ParseFrom(msg);
                     Console.WriteLine($"PubSub: topic: {messageTopicReceived}, msg: {messageReceived}");
-                }
+                } */
             }
         }
     }
