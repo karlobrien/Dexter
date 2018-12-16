@@ -1,6 +1,10 @@
 # Dexter
 Client Server using netmq
 
-Client can send requests to the server
-Server can reply by specific channel to client
-Server publish by multicast
+# Features
+1. Ask the Server for a list of topics
+2. Ask the server for price of a symbol
+3. Remove topic
+4. Remove symbol
+5. Display updates from the server on console.
+

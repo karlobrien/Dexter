@@ -30,6 +30,10 @@ namespace Dexter.Client
         }
     }
 
+
+
+
+
     public class SimpleClient
     {
         private DataRequest _dataRequest;
