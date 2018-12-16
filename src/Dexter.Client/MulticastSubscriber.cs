@@ -10,27 +10,34 @@ namespace Dexter.Client
     {
         public ConcurrentQueue<MarketData> ReceiveQueue { get; }
         private SubscriberSocket _subscriberSocket;
+
+        private NetMQPoller _poller;
         public MulticastSubscriber()
         {
             ReceiveQueue = new ConcurrentQueue<MarketData>();
             _subscriberSocket = new SubscriberSocket();
+
+            _poller = new NetMQPoller { _subscriberSocket };
+            _subscriberSocket.ReceiveReady += SubscriberMessage;
+
             _subscriberSocket.Options.ReceiveHighWatermark = 1000;
             _subscriberSocket.Connect("tcp://localhost:4090");
             _subscriberSocket.Subscribe("topic");
 
             Console.WriteLine("Subscriber socket connecting...");
+            _poller.Run();
+        }
 
-            while (true)
-            {
-                NetMQMessage message = null;
-                var msg = _subscriberSocket.TryReceiveMultipartMessage(ref message, 2);
+        public void SubscriberMessage(object sender, NetMQSocketEventArgs e)
+        {
+            NetMQMessage message = null;
+            var msg = e.Socket.TryReceiveMultipartMessage(ref message, 2);
                 if (msg)
                 {
                     Console.WriteLine(message.First.ConvertToString());
                     var unwrap = MarketData.Parser.ParseFrom(message.Last.Buffer);
                     Console.WriteLine(unwrap.Instrument);
                 }
-            }
         }
     }
 }
