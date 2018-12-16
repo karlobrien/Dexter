@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Dexter.Dto;
 using NetMQ;
@@ -20,18 +21,14 @@ namespace Dexter.Client
             Console.WriteLine($"Request/ Response: {response.Instrument}");
 
             MulticastSubscriber ms = new MulticastSubscriber();
+            ms.JoinTopic("topic");
 
+            Thread.Sleep(TimeSpan.FromSeconds(5));
+
+            ms.JoinTopic("karl");
             bool stopRequested = false;
             Console.CancelKeyPress += (sender, e) => stopRequested = true;
-           /*
-            var dis = Observable.Interval(TimeSpan.FromSeconds(2))
-                .Select(_ => {
-                    ms.ReceiveQueue.TryDequeue(out var de);
-                    return de;
-                }).Subscribe(sub => {
-                    Console.WriteLine();
-                });
-            */
+
             Console.ReadLine();
         }
     }

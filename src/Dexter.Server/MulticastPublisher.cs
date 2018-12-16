@@ -38,10 +38,10 @@ namespace Dexter.Server
                 }
 
                 NetMQMessage mqMsg = NetMqMessageExtensions.CreateMessage("topic", bytes);
-                //put this on the socket send
+                NetMQMessage mqMsgTwo = NetMqMessageExtensions.CreateMessage("karl", bytes);
                 Console.WriteLine($"Sending {msg.Instrument}");
                 _publisherSocket.SendMultipartMessage(mqMsg);
-                //_publisherSocket.SendMoreFrame("topic").SendFrame(bytes);
+                _publisherSocket.SendMultipartMessage(mqMsgTwo);
             });
         }
 
