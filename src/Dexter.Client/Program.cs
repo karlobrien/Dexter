@@ -26,9 +26,6 @@ namespace Dexter.Client
             Thread.Sleep(TimeSpan.FromSeconds(5));
 
             ms.JoinTopic("karl");
-            bool stopRequested = false;
-            Console.CancelKeyPress += (sender, e) => stopRequested = true;
-
             Console.ReadLine();
         }
     }
